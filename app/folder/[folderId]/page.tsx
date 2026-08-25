@@ -16,7 +16,7 @@ export default async function FolderPage(
 
   return (
     <div className="flex flex-col gap-1">
-      <h1 className="px-6 pt-6 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+      <h1 className="px-6 pt-10 text-3xl font-bold leading-tight text-[var(--text)]">
         {folder.name}
       </h1>
       <BookmarkGrid bookmarks={bookmarks} />
