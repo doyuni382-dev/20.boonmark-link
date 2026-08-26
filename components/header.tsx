@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AddFolderButton } from "./add-folder-button";
 
 export function Header() {
   return (
@@ -6,13 +7,16 @@ export function Header() {
       <Link href="/" className="text-lg font-semibold text-[var(--text)]">
         북마크링크
       </Link>
-      <Link
-        href="/new"
-        className="btn-primary flex h-9 items-center gap-1.5 rounded-md px-4 text-base font-medium"
-      >
-        <span aria-hidden>+</span>
-        새 링크
-      </Link>
+      <div className="flex items-center gap-2">
+        <AddFolderButton />
+        <Link
+          href="/new"
+          className="btn-primary flex h-9 items-center gap-1.5 rounded-md px-4 text-base font-medium"
+        >
+          <span aria-hidden>+</span>
+          새 링크
+        </Link>
+      </div>
     </header>
   );
 }
