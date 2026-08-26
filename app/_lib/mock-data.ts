@@ -52,14 +52,3 @@ export const mockBookmarks: Bookmark[] = [
     description: "웹 표준 기술 문서 모음.",
   },
 ];
-
-export function getFolderById(folderId: string): Folder | undefined {
-  return mockFolders.find((folder) => folder.id === folderId);
-}
-
-export function getBookmarksByFolder(folderId: string): Bookmark[] {
-  if (folderId === "all") {
-    return mockBookmarks;
-  }
-  return mockBookmarks.filter((bookmark) => bookmark.folderId === folderId);
-}

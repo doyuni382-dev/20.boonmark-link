@@ -2,9 +2,11 @@ import type { Folder } from "@/app/_lib/types";
 
 interface FolderSelectProps {
   folders: Folder[];
+  value: string;
+  onChange: (value: string) => void;
 }
 
-export function FolderSelect({ folders }: FolderSelectProps) {
+export function FolderSelect({ folders, value, onChange }: FolderSelectProps) {
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="folder" className="text-base font-medium text-[var(--text)]">
@@ -13,7 +15,8 @@ export function FolderSelect({ folders }: FolderSelectProps) {
       <select
         id="folder"
         name="folder"
-        defaultValue=""
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         required
         className="input-field h-11 rounded-md bg-[var(--surface)] px-3 text-base text-[var(--text)]"
       >

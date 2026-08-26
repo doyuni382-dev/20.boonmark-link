@@ -1,6 +1,10 @@
+"use client";
+
 import { BookmarkGrid } from "@/components/bookmark-grid";
-import { mockBookmarks } from "./_lib/mock-data";
+import { useBookmarks } from "./_lib/bookmark-context";
 
 export default function Home() {
-  return <BookmarkGrid bookmarks={mockBookmarks} />;
+  const { bookmarks } = useBookmarks();
+
+  return <BookmarkGrid bookmarks={bookmarks} />;
 }

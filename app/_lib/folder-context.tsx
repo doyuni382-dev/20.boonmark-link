@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, type ReactNode } from "react";
 import type { Folder } from "./types";
+import { useLocalStorageState } from "./use-local-storage-state";
 
 interface FolderContextValue {
   folders: Folder[];
@@ -27,24 +22,38 @@ export function FolderProvider({
   initialFolders,
   children,
 }: FolderProviderProps) {
-  const [folders, setFolders] = useState<Folder[]>(initialFolders);
+  const [folders, setFolders] = useLocalStorageState<Folder[]>(
+    "boonmark-link:folders",
+    initialFolders,
+  );
 
-  const addFolder = useCallback((name: string) => {
-    setFolders((prev) => [
-      ...prev,
-      { id: `folder-${Date.now()}`, name, count: 0 },
-    ]);
-  }, []);
+  const addFolder = useCallback(
+    (name: string) => {
+      setFolders((prev) => [
+        ...prev,
+        { id: `folder-${Date.now()}`, name, count: 0 },
+      ]);
+    },
+    [setFolders],
+  );
 
-  const removeFolder = useCallback((id: string) => {
-    setFolders((prev) => prev.filter((folder) => folder.id !== id));
-  }, []);
+  const removeFolder = useCallback(
+    (id: string) => {
+      setFolders((prev) => prev.filter((folder) => folder.id !== id));
+    },
+    [setFolders],
+  );
 
-  const renameFolder = useCallback((id: string, name: string) => {
-    setFolders((prev) =>
-      prev.map((folder) => (folder.id === id ? { ...folder, name } : folder)),
-    );
-  }, []);
+  const renameFolder = useCallback(
+    (id: string, name: string) => {
+      setFolders((prev) =>
+        prev.map((folder) =>
+          folder.id === id ? { ...folder, name } : folder,
+        ),
+      );
+    },
+    [setFolders],
+  );
 
   return (
     <FolderContext.Provider

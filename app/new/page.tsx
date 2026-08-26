@@ -1,7 +1,4 @@
 import { NewLinkForm } from "@/components/new-link-form";
-import { mockFolders } from "../_lib/mock-data";
-
-const saveableFolders = mockFolders.filter((folder) => folder.id !== "all");
 
 export default function NewLinkPage() {
   return (
@@ -9,7 +6,7 @@ export default function NewLinkPage() {
       <h1 className="text-3xl font-bold leading-tight text-[var(--text)]">
         새 링크 추가
       </h1>
-      <NewLinkForm folders={saveableFolders} />
+      <NewLinkForm />
     </div>
   );
 }

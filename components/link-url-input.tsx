@@ -1,4 +1,9 @@
-export function LinkUrlInput() {
+interface LinkUrlInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function LinkUrlInput({ value, onChange }: LinkUrlInputProps) {
   return (
     <div className="flex flex-col gap-2">
       <label
@@ -12,6 +17,8 @@ export function LinkUrlInput() {
         name="url"
         type="url"
         required
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="https://example.com"
         className="input-field h-11 rounded-md bg-[var(--surface)] px-3 text-base text-[var(--text)] placeholder:text-[var(--placeholder)]"
       />

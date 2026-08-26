@@ -1,25 +1,41 @@
-import { notFound } from "next/navigation";
-import { BookmarkGrid } from "@/components/bookmark-grid";
-import { getBookmarksByFolder, getFolderById } from "../../_lib/mock-data";
+"use client";
 
-export default async function FolderPage(
-  props: PageProps<"/folder/[folderId]">,
-) {
-  const { folderId } = await props.params;
-  const folder = getFolderById(folderId);
+import { useParams } from "next/navigation";
+import { BookmarkGrid } from "@/components/bookmark-grid";
+import { useBookmarks } from "@/app/_lib/bookmark-context";
+import { useFolders } from "@/app/_lib/folder-context";
+
+export default function FolderPage() {
+  const { folderId } = useParams<{ folderId: string }>();
+  const { folders } = useFolders();
+  const { bookmarks } = useBookmarks();
+
+  const folder = folders.find((item) => item.id === folderId);
 
   if (!folder) {
-    notFound();
+    return (
+      <div className="flex flex-col items-center gap-2 px-6 pt-16 text-center">
+        <h1 className="text-2xl font-bold text-[var(--text)]">
+          폴더를 찾을 수 없습니다
+        </h1>
+        <p className="text-base text-[var(--text-sub)]">
+          삭제되었거나 존재하지 않는 폴더예요.
+        </p>
+      </div>
+    );
   }
 
-  const bookmarks = getBookmarksByFolder(folderId);
+  const folderBookmarks =
+    folderId === "all"
+      ? bookmarks
+      : bookmarks.filter((bookmark) => bookmark.folderId === folderId);
 
   return (
     <div className="flex flex-col gap-1">
       <h1 className="px-6 pt-10 text-3xl font-bold leading-tight text-[var(--text)]">
         {folder.name}
       </h1>
-      <BookmarkGrid bookmarks={bookmarks} />
+      <BookmarkGrid bookmarks={folderBookmarks} />
     </div>
   );
 }
