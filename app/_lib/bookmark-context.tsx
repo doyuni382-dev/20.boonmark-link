@@ -7,6 +7,7 @@ import { useLocalStorageState } from "./use-local-storage-state";
 interface BookmarkContextValue {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Omit<Bookmark, "id">) => void;
+  removeBookmark: (id: string) => void;
 }
 
 const BookmarkContext = createContext<BookmarkContextValue | null>(null);
@@ -35,8 +36,17 @@ export function BookmarkProvider({
     [setBookmarks],
   );
 
+  const removeBookmark = useCallback(
+    (id: string) => {
+      setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
+    },
+    [setBookmarks],
+  );
+
   return (
-    <BookmarkContext.Provider value={{ bookmarks, addBookmark }}>
+    <BookmarkContext.Provider
+      value={{ bookmarks, addBookmark, removeBookmark }}
+    >
       {children}
     </BookmarkContext.Provider>
   );
