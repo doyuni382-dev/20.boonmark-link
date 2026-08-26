@@ -4,10 +4,15 @@ import { createContext, useCallback, useContext, type ReactNode } from "react";
 import type { Bookmark } from "./types";
 import { useLocalStorageState } from "./use-local-storage-state";
 
+type BookmarkUpdate = Partial<
+  Pick<Bookmark, "folderId" | "title" | "description">
+>;
+
 interface BookmarkContextValue {
   bookmarks: Bookmark[];
   addBookmark: (bookmark: Omit<Bookmark, "id">) => void;
   removeBookmark: (id: string) => void;
+  updateBookmark: (id: string, updates: BookmarkUpdate) => void;
 }
 
 const BookmarkContext = createContext<BookmarkContextValue | null>(null);
@@ -43,9 +48,20 @@ export function BookmarkProvider({
     [setBookmarks],
   );
 
+  const updateBookmark = useCallback(
+    (id: string, updates: BookmarkUpdate) => {
+      setBookmarks((prev) =>
+        prev.map((bookmark) =>
+          bookmark.id === id ? { ...bookmark, ...updates } : bookmark,
+        ),
+      );
+    },
+    [setBookmarks],
+  );
+
   return (
     <BookmarkContext.Provider
-      value={{ bookmarks, addBookmark, removeBookmark }}
+      value={{ bookmarks, addBookmark, removeBookmark, updateBookmark }}
     >
       {children}
     </BookmarkContext.Provider>
