@@ -20,9 +20,10 @@ type BookmarkUpdate = Partial<
 interface BookmarkContextValue {
   bookmarks: Bookmark[];
   isAdding: boolean;
+  isUpdating: boolean;
   addBookmark: (bookmark: Omit<Bookmark, "id">) => Promise<void>;
   removeBookmark: (id: string) => void;
-  updateBookmark: (id: string, updates: BookmarkUpdate) => void;
+  updateBookmark: (id: string, updates: BookmarkUpdate) => Promise<void>;
 }
 
 const BookmarkContext = createContext<BookmarkContextValue | null>(null);
@@ -120,17 +121,62 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
     setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
   }, []);
 
-  const updateBookmark = useCallback((id: string, updates: BookmarkUpdate) => {
-    setBookmarks((prev) =>
-      prev.map((bookmark) =>
-        bookmark.id === id ? { ...bookmark, ...updates } : bookmark,
-      ),
-    );
-  }, []);
+  // 저장 버튼 중복 클릭으로 update 요청이 여러 번 나가는 것을 막는 플래그.
+  const updatingRef = useRef(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const updateBookmark = useCallback(
+    async (id: string, updates: BookmarkUpdate) => {
+      if (updatingRef.current) return;
+      updatingRef.current = true;
+      setIsUpdating(true);
+
+      try {
+        // links 테이블에 존재하는 컬럼(description, folder_id)만 반영한다.
+        // title은 URL에서 파생하는 값이라 저장할 컬럼이 없다.
+        const patch: Record<string, unknown> = {};
+        if (updates.description !== undefined) {
+          patch.description = updates.description || null;
+        }
+        if (updates.folderId !== undefined) {
+          patch.folder_id = updates.folderId ? Number(updates.folderId) : null;
+        }
+
+        if (Object.keys(patch).length > 0) {
+          const { error } = await supabase
+            .from("links")
+            .update(patch)
+            .eq("id", id);
+
+          if (error) {
+            console.error("링크 수정 실패:", error.message);
+            return;
+          }
+        }
+
+        setBookmarks((prev) =>
+          prev.map((bookmark) =>
+            bookmark.id === id ? { ...bookmark, ...updates } : bookmark,
+          ),
+        );
+      } finally {
+        updatingRef.current = false;
+        setIsUpdating(false);
+      }
+    },
+    [supabase],
+  );
 
   return (
     <BookmarkContext.Provider
-      value={{ bookmarks, isAdding, addBookmark, removeBookmark, updateBookmark }}
+      value={{
+        bookmarks,
+        isAdding,
+        isUpdating,
+        addBookmark,
+        removeBookmark,
+        updateBookmark,
+      }}
     >
       {children}
     </BookmarkContext.Provider>

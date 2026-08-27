@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import type { Bookmark } from "@/app/_lib/types";
 import { useFolders } from "@/app/_lib/folder-context";
+import { useBookmarks } from "@/app/_lib/bookmark-context";
 
 interface EditBookmarkModalProps {
   bookmark: Bookmark;
@@ -12,7 +13,7 @@ interface EditBookmarkModalProps {
     folderId: string;
     title: string;
     description: string;
-  }) => void;
+  }) => Promise<void> | void;
 }
 
 export function EditBookmarkModal({
@@ -21,16 +22,17 @@ export function EditBookmarkModal({
   onSave,
 }: EditBookmarkModalProps) {
   const { folders } = useFolders();
+  const { isUpdating } = useBookmarks();
   const saveableFolders = folders.filter((folder) => folder.id !== "all");
 
   const [folderId, setFolderId] = useState(bookmark.folderId);
   const [title, setTitle] = useState(bookmark.title);
   const [description, setDescription] = useState(bookmark.description ?? "");
 
-  function handleSave() {
+  async function handleSave() {
     const trimmedTitle = title.trim();
-    if (!trimmedTitle || !folderId) return;
-    onSave({
+    if (!trimmedTitle || !folderId || isUpdating) return;
+    await onSave({
       folderId,
       title: trimmedTitle,
       description: description.trim(),
@@ -110,10 +112,10 @@ export function EditBookmarkModal({
           <button
             type="button"
             onClick={handleSave}
-            disabled={!title.trim()}
+            disabled={!title.trim() || isUpdating}
             className="btn-primary flex h-10 items-center justify-center rounded-md px-4 text-base font-medium"
           >
-            저장
+            {isUpdating ? "저장 중..." : "저장"}
           </button>
         </div>
       </div>
