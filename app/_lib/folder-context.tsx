@@ -16,9 +16,10 @@ import { createClient } from "@/utils/supabase/client";
 interface FolderContextValue {
   folders: Folder[];
   isAdding: boolean;
+  isRenaming: boolean;
   addFolder: (name: string) => Promise<void>;
   removeFolder: (id: string) => void;
-  renameFolder: (id: string, name: string) => void;
+  renameFolder: (id: string, name: string) => Promise<void>;
 }
 
 const FolderContext = createContext<FolderContextValue | null>(null);
@@ -97,15 +98,54 @@ export function FolderProvider({ children }: FolderProviderProps) {
     setFolders((prev) => prev.filter((folder) => folder.id !== id));
   }, []);
 
-  const renameFolder = useCallback((id: string, name: string) => {
-    setFolders((prev) =>
-      prev.map((folder) => (folder.id === id ? { ...folder, name } : folder)),
-    );
-  }, []);
+  // 중복 저장으로 update 요청이 여러 번 나가는 것을 막는 플래그.
+  const renamingRef = useRef(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+
+  const renameFolder = useCallback(
+    async (id: string, name: string) => {
+      if (renamingRef.current) return;
+      renamingRef.current = true;
+      setIsRenaming(true);
+
+      try {
+        const { data, error } = await supabase
+          .from("folders")
+          .update({ name })
+          .eq("id", id)
+          .select("id, name")
+          .single();
+
+        if (error || !data) {
+          console.error("폴더 이름 수정 실패:", error?.message);
+          return;
+        }
+
+        setFolders((prev) =>
+          prev.map((folder) =>
+            folder.id === id
+              ? { ...folder, name: data.name as string }
+              : folder,
+          ),
+        );
+      } finally {
+        renamingRef.current = false;
+        setIsRenaming(false);
+      }
+    },
+    [supabase],
+  );
 
   return (
     <FolderContext.Provider
-      value={{ folders, isAdding, addFolder, removeFolder, renameFolder }}
+      value={{
+        folders,
+        isAdding,
+        isRenaming,
+        addFolder,
+        removeFolder,
+        renameFolder,
+      }}
     >
       {children}
     </FolderContext.Provider>

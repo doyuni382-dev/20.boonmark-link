@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import type { Folder } from "@/app/_lib/types";
+import { useFolders } from "@/app/_lib/folder-context";
 
 interface EditFolderModalProps {
   folder: Folder;
   onClose: () => void;
-  onSave: (name: string) => void;
+  onSave: (name: string) => Promise<void> | void;
 }
 
 export function EditFolderModal({
@@ -15,12 +16,17 @@ export function EditFolderModal({
   onClose,
   onSave,
 }: EditFolderModalProps) {
+  const { isRenaming } = useFolders();
   const [name, setName] = useState(folder.name);
 
-  function handleSave() {
+  async function handleSave() {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    onSave(trimmed);
+    if (!trimmed || isRenaming) return;
+    if (trimmed === folder.name) {
+      onClose();
+      return;
+    }
+    await onSave(trimmed);
     onClose();
   }
 
@@ -60,10 +66,10 @@ export function EditFolderModal({
           <button
             type="button"
             onClick={handleSave}
-            disabled={!name.trim()}
+            disabled={!name.trim() || isRenaming}
             className="btn-primary flex h-10 items-center justify-center rounded-md px-4 text-base font-medium"
           >
-            저장
+            {isRenaming ? "저장 중..." : "저장"}
           </button>
         </div>
       </div>
