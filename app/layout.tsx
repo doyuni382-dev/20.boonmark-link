@@ -3,7 +3,6 @@ import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { BookmarkProvider } from "./_lib/bookmark-context";
 import { FolderProvider } from "./_lib/folder-context";
-import { mockBookmarks } from "./_lib/mock-data";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +15,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <FolderProvider>
-          <BookmarkProvider initialBookmarks={mockBookmarks}>
+          <BookmarkProvider>
             <Header />
             <div className="flex flex-1">
               <Sidebar />

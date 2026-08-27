@@ -36,7 +36,7 @@ export function NewLinkForm() {
         );
       }
 
-      addBookmark({
+      await addBookmark({
         folderId,
         title: data.title,
         url: data.url,
