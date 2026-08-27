@@ -21,8 +21,9 @@ interface BookmarkContextValue {
   bookmarks: Bookmark[];
   isAdding: boolean;
   isUpdating: boolean;
+  isRemoving: boolean;
   addBookmark: (bookmark: Omit<Bookmark, "id">) => Promise<void>;
-  removeBookmark: (id: string) => void;
+  removeBookmark: (id: string) => Promise<void>;
   updateBookmark: (id: string, updates: BookmarkUpdate) => Promise<void>;
 }
 
@@ -117,9 +118,32 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
     [supabase],
   );
 
-  const removeBookmark = useCallback((id: string) => {
-    setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
-  }, []);
+  // 삭제 버튼 중복 클릭으로 delete 요청이 여러 번 나가는 것을 막는 플래그.
+  const removingRef = useRef(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const removeBookmark = useCallback(
+    async (id: string) => {
+      if (removingRef.current) return;
+      removingRef.current = true;
+      setIsRemoving(true);
+
+      try {
+        const { error } = await supabase.from("links").delete().eq("id", id);
+
+        if (error) {
+          console.error("링크 삭제 실패:", error.message);
+          return;
+        }
+
+        setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
+      } finally {
+        removingRef.current = false;
+        setIsRemoving(false);
+      }
+    },
+    [supabase],
+  );
 
   // 저장 버튼 중복 클릭으로 update 요청이 여러 번 나가는 것을 막는 플래그.
   const updatingRef = useRef(false);
@@ -173,6 +197,7 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
         bookmarks,
         isAdding,
         isUpdating,
+        isRemoving,
         addBookmark,
         removeBookmark,
         updateBookmark,

@@ -121,8 +121,8 @@ export function BookmarkCard({ bookmark }: BookmarkCardProps) {
         <DeleteBookmarkModal
           bookmark={bookmark}
           onCancel={() => setIsDeleteModalOpen(false)}
-          onConfirm={() => {
-            removeBookmark(bookmark.id);
+          onConfirm={async () => {
+            await removeBookmark(bookmark.id);
             setIsDeleteModalOpen(false);
           }}
         />

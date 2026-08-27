@@ -2,6 +2,7 @@
 
 import { createPortal } from "react-dom";
 import type { Bookmark } from "@/app/_lib/types";
+import { useBookmarks } from "@/app/_lib/bookmark-context";
 
 interface DeleteBookmarkModalProps {
   bookmark: Bookmark;
@@ -14,6 +15,8 @@ export function DeleteBookmarkModal({
   onCancel,
   onConfirm,
 }: DeleteBookmarkModalProps) {
+  const { isRemoving } = useBookmarks();
+
   return createPortal(
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40">
       <div className="flex w-full max-w-sm flex-col gap-5 rounded-lg bg-[var(--surface)] p-6 shadow-lg">
@@ -39,9 +42,10 @@ export function DeleteBookmarkModal({
           <button
             type="button"
             onClick={onConfirm}
-            className="flex h-10 items-center justify-center rounded-md bg-[var(--error)] px-4 text-base font-medium text-white hover:opacity-90"
+            disabled={isRemoving}
+            className="flex h-10 items-center justify-center rounded-md bg-[var(--error)] px-4 text-base font-medium text-white hover:opacity-90 disabled:opacity-60"
           >
-            삭제
+            {isRemoving ? "삭제 중..." : "삭제"}
           </button>
         </div>
       </div>
