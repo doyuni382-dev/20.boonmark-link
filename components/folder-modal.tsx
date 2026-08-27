@@ -9,13 +9,13 @@ interface FolderModalProps {
 }
 
 export function FolderModal({ onClose }: FolderModalProps) {
-  const { addFolder } = useFolders();
+  const { addFolder, isAdding } = useFolders();
   const [name, setName] = useState("");
 
-  function handleSave() {
+  async function handleSave() {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    addFolder(trimmed);
+    if (!trimmed || isAdding) return;
+    await addFolder(trimmed);
     onClose();
   }
 
@@ -53,10 +53,10 @@ export function FolderModal({ onClose }: FolderModalProps) {
           <button
             type="button"
             onClick={handleSave}
-            disabled={!name.trim()}
+            disabled={!name.trim() || isAdding}
             className="btn-primary flex h-10 items-center justify-center rounded-md px-4 text-base font-medium"
           >
-            저장
+            {isAdding ? "저장 중..." : "저장"}
           </button>
         </div>
       </div>
