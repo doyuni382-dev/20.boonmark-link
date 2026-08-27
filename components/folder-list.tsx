@@ -104,8 +104,8 @@ export function FolderList({ folders }: FolderListProps) {
         <DeleteFolderModal
           folder={folderToDelete}
           onCancel={() => setFolderToDelete(null)}
-          onConfirm={() => {
-            removeFolder(folderToDelete.id);
+          onConfirm={async () => {
+            await removeFolder(folderToDelete.id);
             setFolderToDelete(null);
           }}
         />

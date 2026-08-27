@@ -17,8 +17,9 @@ interface FolderContextValue {
   folders: Folder[];
   isAdding: boolean;
   isRenaming: boolean;
+  isRemoving: boolean;
   addFolder: (name: string) => Promise<void>;
-  removeFolder: (id: string) => void;
+  removeFolder: (id: string) => Promise<void>;
   renameFolder: (id: string, name: string) => Promise<void>;
 }
 
@@ -94,9 +95,35 @@ export function FolderProvider({ children }: FolderProviderProps) {
     [supabase],
   );
 
-  const removeFolder = useCallback((id: string) => {
-    setFolders((prev) => prev.filter((folder) => folder.id !== id));
-  }, []);
+  // 중복 클릭으로 delete 요청이 여러 번 나가는 것을 막는 플래그.
+  const removingRef = useRef(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const removeFolder = useCallback(
+    async (id: string) => {
+      if (removingRef.current) return;
+      removingRef.current = true;
+      setIsRemoving(true);
+
+      try {
+        const { error } = await supabase
+          .from("folders")
+          .delete()
+          .eq("id", id);
+
+        if (error) {
+          console.error("폴더 삭제 실패:", error.message);
+          return;
+        }
+
+        setFolders((prev) => prev.filter((folder) => folder.id !== id));
+      } finally {
+        removingRef.current = false;
+        setIsRemoving(false);
+      }
+    },
+    [supabase],
+  );
 
   // 중복 저장으로 update 요청이 여러 번 나가는 것을 막는 플래그.
   const renamingRef = useRef(false);
@@ -142,6 +169,7 @@ export function FolderProvider({ children }: FolderProviderProps) {
         folders,
         isAdding,
         isRenaming,
+        isRemoving,
         addFolder,
         removeFolder,
         renameFolder,

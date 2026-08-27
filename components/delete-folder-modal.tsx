@@ -2,6 +2,7 @@
 
 import { createPortal } from "react-dom";
 import type { Folder } from "@/app/_lib/types";
+import { useFolders } from "@/app/_lib/folder-context";
 
 interface DeleteFolderModalProps {
   folder: Folder;
@@ -14,6 +15,8 @@ export function DeleteFolderModal({
   onCancel,
   onConfirm,
 }: DeleteFolderModalProps) {
+  const { isRemoving } = useFolders();
+
   return createPortal(
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40">
       <div className="flex w-full max-w-sm flex-col gap-5 rounded-lg bg-[var(--surface)] p-6 shadow-lg">
@@ -39,9 +42,10 @@ export function DeleteFolderModal({
           <button
             type="button"
             onClick={onConfirm}
-            className="flex h-10 items-center justify-center rounded-md bg-[var(--error)] px-4 text-base font-medium text-white hover:opacity-90"
+            disabled={isRemoving}
+            className="flex h-10 items-center justify-center rounded-md bg-[var(--error)] px-4 text-base font-medium text-white hover:opacity-90 disabled:opacity-60"
           >
-            삭제
+            {isRemoving ? "삭제 중..." : "삭제"}
           </button>
         </div>
       </div>
