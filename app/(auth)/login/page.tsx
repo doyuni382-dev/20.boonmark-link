@@ -119,12 +119,20 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-[var(--text-sub)]">
-        아직 계정이 없으신가요?{" "}
-        <Link href="/signup" className="font-medium text-[var(--accent)]">
-          회원가입
+      <div className="flex flex-col gap-2 text-center text-sm text-[var(--text-sub)]">
+        <Link
+          href="/forgot-password"
+          className="font-medium text-[var(--accent)]"
+        >
+          비밀번호 찾기
         </Link>
-      </p>
+        <p>
+          아직 계정이 없으신가요?{" "}
+          <Link href="/signup" className="font-medium text-[var(--accent)]">
+            회원가입
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

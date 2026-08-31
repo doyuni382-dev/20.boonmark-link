@@ -33,7 +33,15 @@ export const updateSession = async (request: NextRequest) => {
 
   // 로그인 없이 접근 가능한 경로. 나머지는 모두 로그인이 필요하다.
   const { pathname } = request.nextUrl;
-  const isPublicPath = pathname === "/login" || pathname === "/signup";
+  const isPublicPath =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password";
+
+  // 비밀번호 재설정 페이지는 이메일 링크로 들어온 복구 세션을 사용하므로
+  // 로그인 상태여도 인덱스로 튕겨내지 않는다.
+  const isAuthEntryPath = isPublicPath && pathname !== "/reset-password";
 
   // 비로그인 사용자가 보호된 경로(인덱스·폴더별·새 링크 등)에 오면 로그인 페이지로 보낸다.
   if (!isAuthenticated && !isPublicPath) {
@@ -42,8 +50,8 @@ export const updateSession = async (request: NextRequest) => {
     return copyCookies(supabaseResponse, NextResponse.redirect(url));
   }
 
-  // 이미 로그인한 사용자가 로그인/회원가입 페이지에 오면 인덱스로 보낸다.
-  if (isAuthenticated && isPublicPath) {
+  // 이미 로그인한 사용자가 로그인/회원가입/비밀번호 찾기 페이지에 오면 인덱스로 보낸다.
+  if (isAuthenticated && isAuthEntryPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return copyCookies(supabaseResponse, NextResponse.redirect(url));
