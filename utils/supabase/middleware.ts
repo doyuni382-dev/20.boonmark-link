@@ -32,16 +32,21 @@ export const updateSession = async (request: NextRequest) => {
   const isAuthenticated = Boolean(data?.claims);
 
   // 로그인 없이 접근 가능한 경로. 나머지는 모두 로그인이 필요하다.
+  // /auth/* 는 소셜 로그인 콜백 등 인증 처리 전용 경로다.
   const { pathname } = request.nextUrl;
   const isPublicPath =
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/forgot-password" ||
-    pathname === "/reset-password";
+    pathname === "/reset-password" ||
+    pathname.startsWith("/auth/");
 
-  // 비밀번호 재설정 페이지는 이메일 링크로 들어온 복구 세션을 사용하므로
+  // 비밀번호 재설정 / 소셜 로그인 콜백은 자체 세션 처리 흐름이 있으므로
   // 로그인 상태여도 인덱스로 튕겨내지 않는다.
-  const isAuthEntryPath = isPublicPath && pathname !== "/reset-password";
+  const isAuthEntryPath =
+    isPublicPath &&
+    pathname !== "/reset-password" &&
+    !pathname.startsWith("/auth/");
 
   // 비로그인 사용자가 보호된 경로(인덱스·폴더별·새 링크 등)에 오면 로그인 페이지로 보낸다.
   if (!isAuthenticated && !isPublicPath) {

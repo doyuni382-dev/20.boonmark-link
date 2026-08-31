@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Toast } from "@/components/toast";
+import { KakaoLoginButton } from "@/components/kakao-login-button";
 import { useToast } from "@/app/_lib/use-toast";
 import { createClient } from "@/utils/supabase/client";
 
@@ -32,6 +33,15 @@ export default function LoginPage() {
 
   const canSubmit =
     email.trim() !== "" && password !== "" && !isSubmitting;
+
+  // 소셜 로그인 콜백이 실패하면 /login?error=oauth 로 되돌아온다.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error") === "oauth") {
+      showToast("카카오 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      window.history.replaceState(null, "", "/login");
+    }
+  }, [showToast]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -117,6 +127,8 @@ export default function LoginPage() {
         >
           {isSubmitting ? "처리 중..." : "로그인"}
         </button>
+
+        <KakaoLoginButton onError={showToast} />
       </form>
 
       <div className="flex flex-col gap-2 text-center text-sm text-[var(--text-sub)]">
