@@ -28,7 +28,32 @@ export const updateSession = async (request: NextRequest) => {
 
   // getClaims() 호출이 있어야 만료된 액세스 토큰이 리프레시된다.
   // createServerClient와 이 호출 사이에 다른 로직을 넣지 말 것.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+  const isAuthenticated = Boolean(data?.claims);
+
+  // 로그인 없이 접근 가능한 경로. 나머지는 모두 로그인이 필요하다.
+  const { pathname } = request.nextUrl;
+  const isPublicPath = pathname === "/login" || pathname === "/signup";
+
+  // 비로그인 사용자가 보호된 경로(인덱스·폴더별·새 링크 등)에 오면 로그인 페이지로 보낸다.
+  if (!isAuthenticated && !isPublicPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return copyCookies(supabaseResponse, NextResponse.redirect(url));
+  }
+
+  // 이미 로그인한 사용자가 로그인/회원가입 페이지에 오면 인덱스로 보낸다.
+  if (isAuthenticated && isPublicPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return copyCookies(supabaseResponse, NextResponse.redirect(url));
+  }
 
   return supabaseResponse;
+};
+
+// 세션 갱신 쿠키가 리다이렉트 응답에서도 유지되도록 복사한다.
+const copyCookies = (from: NextResponse, to: NextResponse) => {
+  from.cookies.getAll().forEach((cookie) => to.cookies.set(cookie));
+  return to;
 };
