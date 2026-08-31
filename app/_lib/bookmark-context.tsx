@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Bookmark } from "./types";
+import { useUserId } from "./use-user-id";
 import { createClient } from "@/utils/supabase/client";
 
 type BookmarkUpdate = Partial<
@@ -65,25 +66,35 @@ interface BookmarkProviderProps {
 
 export function BookmarkProvider({ children }: BookmarkProviderProps) {
   const supabase = useMemo(() => createClient(), []);
+  const userId = useUserId();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-  // 마운트 시 links 테이블에 저장된 링크를 최신순으로 불러온다.
+  // 현재 로그인된 사용자의 링크만 최신순으로 불러온다.
+  // 계정이 바뀌면(userId 변경) 다시 불러오고, 로그아웃 시 목록을 비운다.
   useEffect(() => {
     let active = true;
 
-    supabase
-      .from("links")
-      .select("id, url, title, description, thumbnail_url, folder_id")
-      .order("id", { ascending: false })
-      .then(({ data, error }) => {
-        if (!active || error || !data) return;
-        setBookmarks((data as LinkRow[]).map(rowToBookmark));
-      });
+    void (async () => {
+      if (!userId) {
+        if (active) setBookmarks([]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("links")
+        .select("id, url, title, description, thumbnail_url, folder_id")
+        .eq("user_id", userId)
+        .order("id", { ascending: false });
+
+      if (!active || error || !data) return;
+
+      setBookmarks((data as LinkRow[]).map(rowToBookmark));
+    })();
 
     return () => {
       active = false;
     };
-  }, [supabase]);
+  }, [supabase, userId]);
 
   // 저장 버튼 중복 클릭으로 링크가 여러 번 추가되는 것을 막는 플래그.
   const addingRef = useRef(false);

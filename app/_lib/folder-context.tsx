@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Folder } from "./types";
+import { useUserId } from "./use-user-id";
 import { createClient } from "@/utils/supabase/client";
 
 interface FolderContextValue {
@@ -34,32 +35,42 @@ interface FolderProviderProps {
 
 export function FolderProvider({ children }: FolderProviderProps) {
   const supabase = useMemo(() => createClient(), []);
+  const userId = useUserId();
   const [folders, setFolders] = useState<Folder[]>([ALL_FOLDER]);
 
-  // 마운트 시 folders 테이블에서 저장된 폴더를 불러온다.
+  // 현재 로그인된 사용자의 폴더만 불러온다.
+  // 계정이 바뀌면(userId 변경) 다시 불러오고, 로그아웃 시 목록을 비운다.
   useEffect(() => {
     let active = true;
 
-    supabase
-      .from("folders")
-      .select("id, name")
-      .order("id", { ascending: true })
-      .then(({ data, error }) => {
-        if (!active || error || !data) return;
-        setFolders([
-          ALL_FOLDER,
-          ...data.map((row) => ({
-            id: String(row.id),
-            name: row.name as string,
-            count: 0,
-          })),
-        ]);
-      });
+    void (async () => {
+      if (!userId) {
+        if (active) setFolders([ALL_FOLDER]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("folders")
+        .select("id, name")
+        .eq("user_id", userId)
+        .order("id", { ascending: true });
+
+      if (!active || error || !data) return;
+
+      setFolders([
+        ALL_FOLDER,
+        ...data.map((row) => ({
+          id: String(row.id),
+          name: row.name as string,
+          count: 0,
+        })),
+      ]);
+    })();
 
     return () => {
       active = false;
     };
-  }, [supabase]);
+  }, [supabase, userId]);
 
   // 중복 클릭으로 폴더가 여러 개 추가되는 것을 막는 플래그.
   const addingRef = useRef(false);
