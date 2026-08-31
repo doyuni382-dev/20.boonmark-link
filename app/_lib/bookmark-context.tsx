@@ -29,7 +29,7 @@ interface BookmarkContextValue {
 
 const BookmarkContext = createContext<BookmarkContextValue | null>(null);
 
-// links 테이블에는 제목 컬럼이 없으므로 URL의 호스트명을 제목으로 사용한다.
+// title 컬럼이 비어 있는 링크는 URL의 호스트명을 제목으로 대신 사용한다.
 function deriveTitle(url: string): string {
   try {
     return new URL(url).hostname.replace(/^www\./, "");
@@ -41,16 +41,18 @@ function deriveTitle(url: string): string {
 interface LinkRow {
   id: number | string;
   url: string;
+  title: string | null;
   description: string | null;
   thumbnail_url: string | null;
   folder_id: number | string | null;
 }
 
 function rowToBookmark(row: LinkRow): Bookmark {
+  const title = row.title?.trim();
   return {
     id: String(row.id),
     folderId: row.folder_id == null ? "" : String(row.folder_id),
-    title: deriveTitle(row.url),
+    title: title ? title : deriveTitle(row.url),
     url: row.url,
     description: row.description ?? "",
     thumbnail: row.thumbnail_url,
@@ -71,7 +73,7 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
 
     supabase
       .from("links")
-      .select("id, url, description, thumbnail_url, folder_id")
+      .select("id, url, title, description, thumbnail_url, folder_id")
       .order("id", { ascending: false })
       .then(({ data, error }) => {
         if (!active || error || !data) return;
@@ -98,11 +100,12 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
           .from("links")
           .insert({
             url: bookmark.url,
+            title: bookmark.title?.trim() ? bookmark.title.trim() : null,
             description: bookmark.description ?? null,
             thumbnail_url: bookmark.thumbnail ?? null,
             folder_id: bookmark.folderId ? Number(bookmark.folderId) : null,
           })
-          .select("id, url, description, thumbnail_url, folder_id")
+          .select("id, url, title, description, thumbnail_url, folder_id")
           .single();
 
         if (error || !data) {
@@ -156,9 +159,10 @@ export function BookmarkProvider({ children }: BookmarkProviderProps) {
       setIsUpdating(true);
 
       try {
-        // links 테이블에 존재하는 컬럼(description, folder_id)만 반영한다.
-        // title은 URL에서 파생하는 값이라 저장할 컬럼이 없다.
         const patch: Record<string, unknown> = {};
+        if (updates.title !== undefined) {
+          patch.title = updates.title.trim() || null;
+        }
         if (updates.description !== undefined) {
           patch.description = updates.description || null;
         }
