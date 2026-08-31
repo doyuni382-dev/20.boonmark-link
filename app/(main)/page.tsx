@@ -1,7 +1,7 @@
 "use client";
 
 import { BookmarkGrid } from "@/components/bookmark-grid";
-import { useBookmarks } from "./_lib/bookmark-context";
+import { useBookmarks } from "@/app/_lib/bookmark-context";
 
 export default function Home() {
   const { bookmarks } = useBookmarks();
