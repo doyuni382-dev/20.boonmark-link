@@ -148,6 +148,14 @@ export default function SignupPage() {
       </form>
 
       <p className="text-center text-sm text-[var(--text-sub)]">
+        회원가입 시{" "}
+        <Link href="/privacy" className="font-medium text-[var(--accent)]">
+          개인정보 처리방침
+        </Link>
+        에 동의하는 것으로 간주됩니다.
+      </p>
+
+      <p className="text-center text-sm text-[var(--text-sub)]">
         이미 계정이 있으신가요?{" "}
         <Link href="/login" className="font-medium text-[var(--accent)]">
           로그인

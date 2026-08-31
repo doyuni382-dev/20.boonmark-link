@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useBookmarks } from "@/app/_lib/bookmark-context";
 import { useFolders } from "@/app/_lib/folder-context";
 import { FolderList } from "./folder-list";
@@ -24,6 +25,12 @@ export function Sidebar() {
         <FolderList folders={foldersWithCount} />
       </div>
       <LogoutButton />
+      <Link
+        href="/privacy"
+        className="list-hover rounded-md px-3 py-2 text-sm text-[var(--text-sub)]"
+      >
+        개인정보 처리방침
+      </Link>
     </aside>
   );
 }

@@ -39,13 +39,15 @@ export const updateSession = async (request: NextRequest) => {
     pathname === "/signup" ||
     pathname === "/forgot-password" ||
     pathname === "/reset-password" ||
+    pathname === "/privacy" ||
     pathname.startsWith("/auth/");
 
-  // 비밀번호 재설정 / 소셜 로그인 콜백은 자체 세션 처리 흐름이 있으므로
-  // 로그인 상태여도 인덱스로 튕겨내지 않는다.
+  // 비밀번호 재설정 / 소셜 로그인 콜백 / 개인정보 처리방침은
+  // 로그인 상태와 무관하게 접근 가능해야 하므로 인덱스로 튕겨내지 않는다.
   const isAuthEntryPath =
     isPublicPath &&
     pathname !== "/reset-password" &&
+    pathname !== "/privacy" &&
     !pathname.startsWith("/auth/");
 
   // 비로그인 사용자가 보호된 경로(인덱스·폴더별·새 링크 등)에 오면 로그인 페이지로 보낸다.

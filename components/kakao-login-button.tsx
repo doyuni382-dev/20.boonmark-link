@@ -42,13 +42,13 @@ export function KakaoLoginButton({ onError }: KakaoLoginButtonProps) {
       onClick={handleKakaoLogin}
       disabled={isLoading}
       aria-label="카카오로 로그인"
-      className="block w-full overflow-hidden rounded-md disabled:opacity-40"
+      className="flex h-11 w-full items-center justify-center overflow-hidden rounded-md disabled:opacity-40"
     >
       <Image
         src={kakaoLoginImage}
         alt="카카오 로그인"
         priority
-        className="h-auto w-full"
+        className="h-full w-full object-cover"
       />
     </button>
   );
