@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>제38회 춘천마임축제 · 2026 몸짓의 기록</title>
+  <meta
+    name="description"
+    content="2026 제38회 춘천마임축제(5월 24일–31일)의 기록. 주제 '몸풍경', 핵심 키워드 물·불·몸짓. 다음 축제 소식은 공식 채널에서 확인하세요."
+  />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- JS가 없거나 실패해도 내용이 보이도록 등장 효과를 비활성화 -->
+  <noscript>
+    <style>
+      .reveal { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <!--
+    기존 북마크 사이트와 로직이 분리된 정적 홍보 페이지입니다.
+    외부 라이브러리/패키지 없이 HTML + CSS + JS 만 사용합니다.
+    공식 URL·이미지는 config.js 한 곳에서만 관리합니다.
+    배경의 컬러 블록·도형은 모두 장식(aria-hidden)이며 콘텐츠·기능과 무관합니다.
+  -->
+
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#top">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">춘천마임축제</span>
+    </a>
+    <nav class="site-nav">
+      <a href="#record">2026 기록</a>
+      <a href="#elements">물·불·몸짓</a>
+      <a href="#channels">공식 채널</a>
+      <a class="site-nav__home" href="/">← 북마크링크</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- 1 · 2. 히어로: 제목·핵심 문구·날짜를 포스터처럼 강하게 -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <span class="ring"></span>
+        <span class="block block--cobalt"></span>
+        <span class="block block--lime"></span>
+        <span class="block block--pink"></span>
+        <!-- 마임의 도약·균형을 추상 도형으로 (포스터 인물 복제 아님) -->
+        <div class="mime">
+          <span class="mime__head"></span>
+          <span class="mime__torso"></span>
+          <span class="mime__arm mime__arm--l"></span>
+          <span class="mime__arm mime__arm--r"></span>
+          <span class="mime__leg mime__leg--l"></span>
+          <span class="mime__leg mime__leg--r"></span>
+        </div>
+      </div>
+
+      <div class="hero__inner">
+        <div class="hero__copy reveal">
+          <span class="hero__badge">축제 종료 · 기록형 콘텐츠</span>
+          <p class="hero__eyebrow">제38회 · 2026 춘천마임축제</p>
+          <h1 class="hero__title">
+            춘천<span class="hero__title-accent">마임</span>축제
+          </h1>
+          <p class="hero__lead">
+            말 없는 몸짓이<br />도시의 풍경을 바꾼다
+          </p>
+          <ul class="hero__meta">
+            <li>2026. 5. 24 – 5. 31</li>
+            <li>축제 주제 · 몸풍경</li>
+            <li>물 · 불 · 몸짓</li>
+          </ul>
+          <p class="hero__sub">
+            춘천을 무대로 펼쳐진 몸짓의 기록. 2026 축제는 마무리되었고,
+            이 페이지에서 그 장면을 다시 만납니다.
+          </p>
+          <a class="btn btn--solid" href="#record">2026 축제 기록 보기</a>
+        </div>
+
+        <!-- 축제 포스터가 들어갈 큰 이미지 영역 (이미지 없으면 CSS 컬러 블록) -->
+        <figure class="poster reveal" aria-label="축제 포스터 이미지 영역">
+          <div class="poster__frame" id="posterFrame">
+            <div class="poster__wave" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="poster__label">
+              <span>축제 포스터</span>
+              <span>이미지 영역</span>
+              <small>config.js 의 images.poster 에 파일 경로 입력</small>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 3. 2026 축제 기록 안내 -->
+    <section class="record" id="record">
+      <div class="deco" aria-hidden="true">
+        <span class="block block--ink"></span>
+        <span class="block block--cobalt"></span>
+      </div>
+      <div class="record__inner">
+        <div class="section-head reveal">
+          <span class="section-head__kicker">RECORD</span>
+          <h2>2026 축제의 장면을<br />다시 만나다</h2>
+          <p>
+            춘천을 무대로 펼쳐진 몸짓의 기록입니다. 2026년 5월 24일부터
+            31일까지 이어진 제38회 춘천마임축제의 사진과 영상을 정리하고
+            있으며, 공개 시점은 공식 채널에서 안내됩니다.
+          </p>
+        </div>
+
+        <!-- 기록 이미지가 들어갈 넓은 영역 -->
+        <div class="record__media reveal" id="recordMedia" aria-label="2026 축제 기록 이미지 영역">
+          <span>2026 기록 이미지 영역</span>
+          <small>config.js 의 images.record 에 파일 경로 입력</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 물 · 불 · 몸짓 핵심 카드 3개 -->
+    <section class="elements" id="elements">
+      <div class="deco" aria-hidden="true">
+        <span class="block block--yellow"></span>
+        <span class="block block--pink"></span>
+      </div>
+      <div class="section-head section-head--center reveal">
+        <span class="section-head__kicker">ELEMENTS</span>
+        <h2>물 · 불 · 몸짓</h2>
+        <p>물에서 시작해 불로 이어지는 축제의 에너지.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card card--water reveal">
+          <span class="card__shape" aria-hidden="true"></span>
+          <h3 class="card__title">물</h3>
+          <p class="card__body">
+            물줄기 속에서 관객과 배우의 경계가 사라지는, 축제가
+            시작되는 자리.
+          </p>
+        </article>
+        <article class="card card--fire reveal">
+          <span class="card__shape" aria-hidden="true"></span>
+          <h3 class="card__title">불</h3>
+          <p class="card__body">
+            밤이 되면 광장을 채우는 불빛. 뜨거운 에너지가 도시의
+            어둠을 밀어냅니다.
+          </p>
+        </article>
+        <article class="card card--gesture reveal">
+          <span class="card__shape" aria-hidden="true"></span>
+          <h3 class="card__title">몸짓</h3>
+          <p class="card__body">
+            대사 없이 전해지는 이야기. 손끝과 걸음, 표정으로 완성되는
+            마임의 언어.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. 축제 소개 -->
+    <section class="about" id="about">
+      <div class="deco" aria-hidden="true">
+        <span class="block block--paper"></span>
+        <span class="beam"></span>
+      </div>
+      <div class="about__inner">
+        <div class="section-head reveal">
+          <span class="section-head__kicker">ABOUT</span>
+          <h2>축제 소개</h2>
+        </div>
+        <div class="about__text reveal">
+          <p>
+            춘천마임축제는 몸의 언어로 이야기하는 공연예술 축제입니다.
+            2026년 제38회의 주제는 &lsquo;몸풍경&rsquo; — 몸짓이 만들어내는
+            도시의 풍경입니다.
+          </p>
+          <p>
+            극장 무대를 넘어 거리와 광장, 강변까지 도시 곳곳이 무대가
+            됩니다. 자세한 내용은 공식 채널의 공지를 기준으로 합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 공식 홈페이지 · 공식 SNS 버튼 -->
+    <section class="channels" id="channels">
+      <div class="deco" aria-hidden="true">
+        <span class="block block--yellow"></span>
+        <span class="block block--pink"></span>
+      </div>
+      <div class="section-head section-head--center reveal">
+        <span class="section-head__kicker">CHANNELS</span>
+        <h2>공식 채널</h2>
+        <p>가장 정확한 정보는 공식 채널에서 확인하세요.</p>
+      </div>
+      <div class="channels__buttons reveal">
+        <a
+          class="btn btn--solid btn--wide"
+          data-link="website"
+          href="#"
+          rel="noopener"
+          aria-disabled="true"
+        >
+          공식 홈페이지
+          <small class="btn__placeholder">공식 홈페이지 주소 입력</small>
+        </a>
+        <a
+          class="btn btn--outline btn--wide"
+          data-link="sns"
+          href="#"
+          rel="noopener"
+          aria-disabled="true"
+        >
+          공식 SNS
+          <small class="btn__placeholder">공식 SNS 주소 입력</small>
+        </a>
+      </div>
+    </section>
+
+    <!-- 7. 마무리: 다음 축제 소식 확인 -->
+    <section class="outro" id="outro">
+      <div class="deco" aria-hidden="true">
+        <span class="block block--cobalt"></span>
+        <span class="block block--yellow"></span>
+      </div>
+      <div class="outro__inner reveal">
+        <h2>다음 춘천마임축제 소식은<br />공식 채널에서 확인하세요</h2>
+        <p>새 소식은 공식 홈페이지와 SNS를 통해 가장 먼저 공개됩니다.</p>
+        <a class="btn btn--solid" data-link="website" href="#" aria-disabled="true">
+          공식 채널 확인
+          <small class="btn__placeholder">공식 홈페이지 주소 입력</small>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><a class="footer-home" href="/">← 북마크링크로 돌아가기</a></p>
+    <p>춘천마임축제 홍보 페이지 (비공식 예시). 공식 정보는 공식 채널 기준입니다.</p>
+  </footer>
+
+  <!-- 설정(공식 링크·이미지 경로)은 config.js 한 곳에서만 관리 -->
+  <script src="./config.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>

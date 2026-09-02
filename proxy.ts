@@ -13,8 +13,9 @@ export const config = {
      * - _next/static (정적 파일)
      * - _next/image (이미지 최적화 파일)
      * - favicon.ico, 이미지 파일 확장자
+     * - mime-promo (public/ 의 독립 정적 홍보 페이지, 로그인 없이 접근)
      * 필요하면 여기에 인증에서 제외할 경로를 추가한다.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|mime-promo|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

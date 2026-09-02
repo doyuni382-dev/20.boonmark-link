@@ -21,6 +21,12 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-[var(--border)] bg-[var(--bg)] px-3 py-4 sm:flex">
+      <a
+        href="/mime-promo/index.html"
+        className="btn-primary mb-4 block rounded-md px-3 py-2.5 text-center text-sm font-semibold"
+      >
+        2026 춘천마임축제
+      </a>
       <div className="flex-1">
         <FolderList folders={foldersWithCount} />
       </div>

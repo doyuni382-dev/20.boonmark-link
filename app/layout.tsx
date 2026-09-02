@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     images: [
       {
-        url: "/thumbnail.png",
+        url: "/thumbnail.jpg",
         width: 2400,
         height: 1260,
         alt: "북마크링크",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "북마크링크",
     description,
-    images: ["/thumbnail.png"],
+    images: ["/thumbnail.jpg"],
   },
 };
 
